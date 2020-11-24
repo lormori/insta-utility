@@ -1,9 +1,9 @@
 from InstaLogin import login
-from InstaFollowers import find_non_followers
+from InstaUnfollow import unfollow_non_followees
 
 def main():
     driver = login()
-    find_non_followers(driver)
+    unfollow_non_followees(driver)
 
 if __name__ == "__main__":
     main()

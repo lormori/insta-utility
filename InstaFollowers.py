@@ -64,7 +64,11 @@ def find_following(driver):
    return scroll_dialog(allFollowing, driver)
 
 def find_non_followers(driver):
-   find_followers(driver)
-   find_following(driver)
-   # Go to user's following
-   # driver.get("https://www.instagram.com/" + username() + "/following/")
+   followers = find_followers(driver)
+   following = find_following(driver)
+
+   if(len(following) > len(followers)):
+      return set(following) - set(followers)
+
+   return []
+   

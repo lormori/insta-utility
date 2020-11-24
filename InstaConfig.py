@@ -1,5 +1,6 @@
 import getpass
 import json
+import os.path
 
 filename = "config.txt"
 
@@ -16,11 +17,17 @@ def save():
     json.dump(user_config, config)
 
 def username():
+    if(os.path.exists(filename) == False):
+        save()
+
     config = open(filename)
     data = json.load(config)
     return data["user_name"]
 
 def password():
+    if(os.path.exists(filename) == False):
+        save()
+        
     config = open(filename)
     data = json.load(config)
     return data["password"]

@@ -35,3 +35,10 @@ def add():
 
     save(newWhitelist)
 
+def white_list():
+    if(os.path.exists(filename) == False):
+        return {}
+
+    whitelist = open(filename)
+    data = json.load(whitelist)
+    return data["white_list"]

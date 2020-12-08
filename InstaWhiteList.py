@@ -4,7 +4,6 @@ import os.path
 filename = "whitelist.txt"
 
 def save(whitelist):
-
     new_whitelist = whitelist
 
     if(os.path.exists(filename)):

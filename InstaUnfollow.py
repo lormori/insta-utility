@@ -39,6 +39,14 @@ def unfollow_non_followees(driver):
     print("Filtered Whitelist Users")
     print(to_unfollow)
 
+    unfollow_chance = 0
+
     for user in to_unfollow:
-        unfollow_user(driver, user)
-        wait(driver, 2,5)
+        if(randrange(0, 100) < unfollow_chance):
+            unfollow_user(driver, user)
+            wait(driver, 2,5)
+            unfollow_chance = 0
+        else:
+            # increase change by 10%
+            unfollow_chance = unfollow_chance + 5
+            print("Skipping unfollowing... " + user)

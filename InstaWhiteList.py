@@ -3,6 +3,22 @@ import os.path
 
 filename = "whitelist.txt"
 
+def white_list():
+    if(os.path.exists(filename) == False):
+        return {}
+
+    whitelist = open(filename)
+    data = json.load(whitelist)
+    return data["white_list"]
+
+def clean_duplicates():
+    mylist = list(dict.fromkeys(white_list()))
+
+    whitelist = {}
+    whitelist["white_list"] = mylist
+    config = open(filename, "w")
+    json.dump(whitelist, config)
+
 def save(whitelist):
     new_whitelist = whitelist
 
@@ -13,12 +29,14 @@ def save(whitelist):
         old_whitelist = data["white_list"]
 
         if(len(old_whitelist) > 0):
-            new_whitelist.append(old_whitelist)
+            new_whitelist.extend(old_whitelist)
 
     whitelist = {}
     whitelist["white_list"] = new_whitelist
     config = open(filename, "w")
     json.dump(whitelist, config)
+
+    clean_duplicates()
 
 def add():
     newWhitelist = []
@@ -33,11 +51,3 @@ def add():
             break
 
     save(newWhitelist)
-
-def white_list():
-    if(os.path.exists(filename) == False):
-        return {}
-
-    whitelist = open(filename)
-    data = json.load(whitelist)
-    return data["white_list"]

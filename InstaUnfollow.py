@@ -25,7 +25,7 @@ def unfollow_user(driver, username):
     wait(driver, 2, 4)
     driver.find_element_by_xpath('//button[text()="Unfollow"]').click()
 
-def unfollow_non_followees(driver):
+def unfollow_non_followees(driver, max_to_unfollow):
     to_unfollow = find_non_followers(driver)
     
     print("Starting unfollow..")
@@ -39,14 +39,16 @@ def unfollow_non_followees(driver):
     print("Filtered Whitelist Users")
     print(to_unfollow)
 
-    unfollow_chance = 0
+    current_count = 0
 
     for user in to_unfollow:
-        if(randrange(0, 100) < unfollow_chance):
-            unfollow_user(driver, user)
-            wait(driver, 2,5)
-            unfollow_chance = 0
-        else:
-            # increase change by 10%
-            unfollow_chance = unfollow_chance + 5
-            print("Skipping unfollowing... " + user)
+        unfollow_user(driver, user)
+        wait(driver, 2,5)
+        current_count += 1
+
+        if(current_count > max_to_unfollow):
+            break
+    
+    print("Total unfollowed: " + str(current_count))
+
+    

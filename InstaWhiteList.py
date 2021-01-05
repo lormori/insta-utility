@@ -3,40 +3,31 @@ import os.path
 
 filename = "whitelist.txt"
 
-def white_list():
-    if(os.path.exists(filename) == False):
+def get_white_list():
+    try:
+        if(os.path.exists(filename) == False):
+            return {}
+        whitelist = open(filename)
+        data = json.load(whitelist)
+        return data["white_list"]
+    except ValueError:
+        print ("Could not convert white list to JSON, the file will be overwritten with new data now")
         return {}
 
-    whitelist = open(filename)
-    data = json.load(whitelist)
-    return data["white_list"]
-
-def clean_duplicates():
-    mylist = list(dict.fromkeys(white_list()))
-
-    whitelist = {}
-    whitelist["white_list"] = mylist
-    config = open(filename, "w")
-    json.dump(whitelist, config)
-
 def save(whitelist):
-    new_whitelist = whitelist
+    old_whitelist = get_white_list()
 
-    if(os.path.exists(filename)):
-        old_whitelist = {}
-        config = open(filename)
-        data = json.load(config)
-        old_whitelist = data["white_list"]
+    if(len(old_whitelist) > 0):
+        whitelist.extend(old_whitelist)
 
-        if(len(old_whitelist) > 0):
-            new_whitelist.extend(old_whitelist)
+    # remove duplicates
+    non_duplicates = list(dict.fromkeys(whitelist))
 
+    # convert to dictionary
     whitelist = {}
-    whitelist["white_list"] = new_whitelist
+    whitelist["white_list"] = non_duplicates
     config = open(filename, "w")
     json.dump(whitelist, config)
-
-    clean_duplicates()
 
 def add():
     newWhitelist = []
@@ -51,3 +42,7 @@ def add():
             break
 
     save(newWhitelist)
+
+
+if __name__ == "__main__":
+    add()

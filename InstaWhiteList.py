@@ -42,7 +42,3 @@ def add():
             break
 
     save(newWhitelist)
-
-
-if __name__ == "__main__":
-    add()

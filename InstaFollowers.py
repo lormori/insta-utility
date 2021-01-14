@@ -34,11 +34,14 @@ def scroll_dialog(followNumber, driver):
 
    return followers
 
-def find_followers(driver):
+def find_followers(driver, username_to_check = None):
    time.sleep(2)
 
+   if(username_to_check is None):
+      username_to_check = username()
+
    # go to user profile
-   driver.get("https://www.instagram.com/" + username())
+   driver.get("https://www.instagram.com/" + username_to_check)
 
    # find number of followers
    allfoll=int(driver.find_element_by_xpath("//li[2]/a/span").text) 

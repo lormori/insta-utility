@@ -1,15 +1,18 @@
 from igramscraper.instagram import Instagram
+from InstaConfig import username, password
+from InstaLogin import login
+import InstaFollowers
 
-def unfollow_check():
-    instagram = Instagram()
-    instagram.with_credentials("asd", "asd")
-    instagram.login()
+def unfollow_check(driver):
+    followers = InstaFollowers.find_followers(driver)
 
-    print("Unfollow Check hello world")
-
+    for follower in followers:
+        print(follower)
+        
 def start():
-    unfollow_check()
-
+    driver = login()
+    unfollow_check(driver)
+    driver.quit()
 
 if __name__ == "__main__":
     start()

@@ -1,31 +1,36 @@
-from igramscraper.instagram import Instagram
 from InstaConfig import username, password
 from InstaLogin import login
+import InstaConfig
+import instaloader
 import InstaFollowers
 import time
+from os import path
+import ast
 
-def unfollow_check(driver):
-    followers = InstaFollowers.find_followers(driver)
-
-    f = open("list_followers.txt", "w")
-
-    for follower in followers:
-        print(follower)
-        f.write("Now the file has more content!")
-    
-    f.close()
-
-    while(True):
-        time.sleep(60)
-        followers = InstaFollowers.find_followers(driver)
-
-        f = open("list_followers.txt", "r")
-        old_users = f.read().splitlines()
+follower_list_file = "followers_list.txt"
 
 def start():
-    driver = login()
-    unfollow_check(driver)
-    driver.quit()
+    L = instaloader.Instaloader()
+    L.login(InstaConfig.username(), InstaConfig.password())
+
+    profile = instaloader.Profile.from_username(L.context, "lomos_dungeon")
+    current_followers = profile.get_followers()
+
+    for user in current_followers:
+        print(user.username)
+
+    if not path.exists(follower_list_file):
+        f = open(follower_list_file, "w")
+        f.write(str([user.username for user in current_followers]))
+        f.close()
+    else:
+        f = open(follower_list_file, "r+")
+        old_followers = f.read()
+        f.close()
+        old_followers = ast.literal_eval(old_followers)
+
+
+
 
 if __name__ == "__main__":
     start()

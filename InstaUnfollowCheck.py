@@ -63,10 +63,11 @@ def start():
     while(True):
         try:
             check_followers()
+        except KeyboardInterrupt:
+            print("Exiting...")
+            sys.exit(0)
         except Exception as e:
             print(e)
-        except KeyboardInterrupt:
-            sys.exit(0)
 
         time.sleep(60 * 60) # wait 1 hour before running again 
 
@@ -83,5 +84,5 @@ def test_webhook():
     send_discord_message(message, current_followers)
 
 if __name__ == "__main__":
-    #start()
-    test_webhook()
+    start()
+    #test_webhook()

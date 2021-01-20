@@ -13,7 +13,7 @@ follower_list_file = "followers_list.txt"
 
 def save_followers_to_file(current_followers):
         f = open(follower_list_file, "w")
-        f.write(str([user.username for user in current_followers]))
+        f.write(str(current_followers))
         f.close()
 
 def send_discord_message(message, profiles):
@@ -37,9 +37,7 @@ def check_followers():
 
     profile = instaloader.Profile.from_username(L.context, "lomos_dungeon")
     current_followers = profile.get_followers()
-
-    for user in current_followers:
-        print(user.username)
+    current_followers = [user.username for user in current_followers]
 
     if not path.exists(follower_list_file):
         save_followers_to_file(current_followers)
@@ -47,7 +45,6 @@ def check_followers():
         f = open(follower_list_file, "r+")
         old_followers = f.read()
         f.close()
-        current_followers = [user.username for user in current_followers]
         old_followers = ast.literal_eval(old_followers)
 
         follower_change = len(current_followers) - len(old_followers)
@@ -63,13 +60,13 @@ def start():
     while(True):
         try:
             check_followers()
+            time.sleep(60 * 60) # wait 1 hour before running again 
         except KeyboardInterrupt:
             print("Exiting...")
             sys.exit(0)
         except Exception as e:
             print(e)
-
-        time.sleep(60 * 60) # wait 1 hour before running again 
+            sys.exit(0)
 
 def test_webhook():
     L = instaloader.Instaloader()
@@ -79,6 +76,8 @@ def test_webhook():
     current_followers = profile.get_followers()
 
     current_followers = [user.username for user in current_followers]
+
+    save_followers_to_file(current_followers)
 
     message = "You have {} followers: \n".format(len(current_followers))
     send_discord_message(message, current_followers)

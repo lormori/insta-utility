@@ -7,6 +7,7 @@ import time
 from os import path
 import ast
 import discord_webhook
+import sys
 
 follower_list_file = "followers_list.txt"
 
@@ -15,7 +16,22 @@ def save_followers_to_file(current_followers):
         f.write(str([user.username for user in current_followers]))
         f.close()
 
-def start():
+def send_discord_message(message, profiles):
+
+    for profile in profiles:
+        message += "https://www.instagram.com/{} \n".format(profile)
+        if len(message) > 1900:
+            # getting closer to the 2000 characters limit, send message now and reset
+            webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
+            webhook.execute()
+            message = ""
+            # avoid throttling
+            time.sleep(10)
+
+    webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
+    webhook.execute()
+
+def check_followers():
     L = instaloader.Instaloader()
     L.login(InstaConfig.username(), InstaConfig.password())
 
@@ -38,30 +54,33 @@ def start():
 
         if follower_change != 0:
             unfollowers = set(old_followers) - set(current_followers)
-
-            message = "Your followers have changed by {}: from {} to {} \n".format(follower_change, len(old_followers), len(current_followers))
-
-            if unfollowers > 0:
-                message += '\n'.join(["https://www.instagram.com/{}".format(unfollower) for unfollower in unfollowers])
-
-            webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
-            webhook.execute()
+            message = "Followers changed by {} - from {} to {}".format(follower_change, len(old_followers), len(current_followers))
+            send_discord_message(message, unfollowers)
         
         save_followers_to_file(current_followers)
+
+def start():
+    while(True):
+        try:
+            check_followers()
+        except Exception as e:
+            print(e)
+        except KeyboardInterrupt:
+            sys.exit(0)
+
+        time.sleep(60 * 60) # wait 1 hour before running again 
 
 def test_webhook():
     L = instaloader.Instaloader()
     L.login(InstaConfig.username(), InstaConfig.password())
 
-    profile = instaloader.Profile.from_username(L.context, "lollo.bot")
+    profile = instaloader.Profile.from_username(L.context, "lomos_dungeon")
     current_followers = profile.get_followers()
 
     current_followers = [user.username for user in current_followers]
-    message = "Your followers: {} \n".format(len(current_followers))
-    message += '\n'.join(["https://www.instagram.com/{}".format(follower) for follower in current_followers])
 
-    webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
-    webhook.execute()
+    message = "You have {} followers: \n".format(len(current_followers))
+    send_discord_message(message, current_followers)
 
 if __name__ == "__main__":
     #start()

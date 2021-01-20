@@ -9,6 +9,11 @@ import ast
 
 follower_list_file = "followers_list.txt"
 
+def save_followers_to_file(current_followers):
+        f = open(follower_list_file, "w")
+        f.write(str([user.username for user in current_followers]))
+        f.close()
+
 def start():
     L = instaloader.Instaloader()
     L.login(InstaConfig.username(), InstaConfig.password())
@@ -20,15 +25,22 @@ def start():
         print(user.username)
 
     if not path.exists(follower_list_file):
-        f = open(follower_list_file, "w")
-        f.write(str([user.username for user in current_followers]))
-        f.close()
+        save_followers_to_file(current_followers)
     else:
         f = open(follower_list_file, "r+")
         old_followers = f.read()
         f.close()
         old_followers = ast.literal_eval(old_followers)
 
+        follower_change = len(current_followers) - len(old_followers)
+
+        if follower_change != 0:
+            # send discord message here
+            unfollowers = set(old_followers) - set(current_followers)
+
+            
+        
+        save_followers_to_file(current_followers)
 
 
 

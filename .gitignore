@@ -140,3 +140,4 @@ cython_debug/
 .vscode
 config.txt
 whitelist.txt
+followers_list.txt

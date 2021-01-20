@@ -22,13 +22,13 @@ def send_discord_message(message, profiles):
         message += "https://www.instagram.com/{} \n".format(profile)
         if len(message) > 1900:
             # getting closer to the 2000 characters limit, send message now and reset
-            webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
+            webhook = discord_webhook.DiscordWebhook(url=InstaConfig.webhook(), content=message)
             webhook.execute()
             message = ""
             # avoid throttling
             time.sleep(10)
 
-    webhook = discord_webhook.DiscordWebhook(url="https://discord.com/api/webhooks/801565339976466512/cFcV4CgUY8XhOXOKGJiumuR7TDyMyi9TTGkS06riGmj87AnZZ8qO4HrW8Z8HZ6FaUYNf", content=message)
+    webhook = discord_webhook.DiscordWebhook(url=InstaConfig.webhook(), content=message)
     webhook.execute()
 
 def check_followers():
@@ -74,7 +74,7 @@ def test_webhook():
     L = instaloader.Instaloader()
     L.login(InstaConfig.username(), InstaConfig.password())
 
-    profile = instaloader.Profile.from_username(L.context, "lomos_dungeon")
+    profile = instaloader.Profile.from_username(L.context, "lollo.bot")
     current_followers = profile.get_followers()
 
     current_followers = [user.username for user in current_followers]

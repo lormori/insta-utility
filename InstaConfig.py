@@ -13,6 +13,9 @@ def save():
     user_config["password"] = getpass.getpass("Insert password:")
     print("Password inserted is: ", user_config["password"])
 
+    user_config["webhook"] = input("Insert Discord webhook:")
+    print("Discord webhook inserted is: ", user_config["webhook"])
+
     config = open(filename, "w")
     json.dump(user_config, config)
 
@@ -31,3 +34,11 @@ def password():
     config = open(filename)
     data = json.load(config)
     return data["password"]
+
+def webhook():
+    if(os.path.exists(filename) == False):
+        save()
+        
+    config = open(filename)
+    data = json.load(config)
+    return data["webhook"]

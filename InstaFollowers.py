@@ -27,7 +27,6 @@ def scroll_dialog(followNumber, driver):
 
    for user in followersList.find_elements_by_css_selector('li'):
       userLink = user.find_element_by_css_selector('a').get_attribute('href')
-      print(userLink)
       followers.append(userLink)
       if (len(followers) == max):
             break

@@ -1,5 +1,5 @@
 from InstaFollowers import find_non_followers
-from InstaWhiteList import white_list
+from InstaWhiteList import get_white_list
 from random import randrange
 import time
 
@@ -10,7 +10,7 @@ def wait(driver, min, max):
     time.sleep(waitTime)
 
 def is_whitelisted(username : str):
-    for i in white_list():
+    for i in get_white_list():
         if(username.__contains__(i)):
             return True
     return False
@@ -32,7 +32,7 @@ def unfollow_non_followees(driver, max_to_unfollow):
     print(to_unfollow)
 
     print("Whitelist..")
-    print(white_list())
+    print(get_white_list())
 
     to_unfollow = [ entry for entry in to_unfollow if is_whitelisted(entry) == False ] 
 

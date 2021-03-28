@@ -3,8 +3,9 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
-from InstaConfig import username, password
+from InstaConfig import get_username, get_password
 
 def click_button(driver, element_xpath):
     driver.find_element_by_xpath(element_xpath).click()
@@ -28,10 +29,10 @@ def login():
 
     # Fill out username and password and click
     driver.implicitly_wait(2)
-    driver.find_element_by_xpath('//input[@name="username"]').send_keys(username())
+    driver.find_element_by_xpath('//input[@name="username"]').send_keys(get_username())
 
     driver.implicitly_wait(1)
-    driver.find_element_by_xpath('//input[@name="password"]').send_keys(password())
+    driver.find_element_by_xpath('//input[@name="password"]').send_keys(get_password())
 
     driver.implicitly_wait(1)
     driver.find_element_by_xpath('//button[@type="submit"]').click()

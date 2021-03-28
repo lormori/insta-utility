@@ -1,5 +1,5 @@
 from selenium import webdriver
-from InstaConfig import username, password
+from InstaConfig import get_username, get_password
 import time
 import random
 
@@ -37,7 +37,7 @@ def find_followers(driver, username_to_check = None):
    time.sleep(2)
 
    if(username_to_check is None):
-      username_to_check = username()
+      username_to_check = get_username()
 
    # go to user profile
    driver.get("https://www.instagram.com/" + username_to_check)
@@ -55,7 +55,7 @@ def find_following(driver):
    time.sleep(2)
 
    # go to user profile
-   driver.get("https://www.instagram.com/" + username())
+   driver.get("https://www.instagram.com/" + get_username())
 
    # find number of following
    allFollowing=int(driver.find_element_by_xpath("//li[3]/a/span").text) 
@@ -69,8 +69,4 @@ def find_non_followers(driver):
    followers = find_followers(driver)
    following = find_following(driver)
 
-   if(len(following) > len(followers)):
-      return set(following) - set(followers)
-
-   return []
-   
+   return set(following) - set(followers)

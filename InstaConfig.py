@@ -4,22 +4,29 @@ import os.path
 
 filename = "config.txt"
 
-def save():
+def save_details(username, password, webhook):
     user_config = {}
 
-    user_config["user_name"] = input("Type your user name:")
-    print("Username inserted is: ", user_config.get("user_name"))
-
-    user_config["password"] = getpass.getpass("Insert password:")
-    print("Password inserted is: ", user_config["password"])
-
-    user_config["webhook"] = input("Insert Discord webhook:")
-    print("Discord webhook inserted is: ", user_config["webhook"])
+    user_config["user_name"] = username
+    user_config["password"] = password
+    user_config["webhook"] = webhook
 
     config = open(filename, "w")
     json.dump(user_config, config)
 
-def username():
+def save():
+    username = input("Type your user name:")
+    print("Username inserted is: ", username)
+
+    password = getpass.getpass("Insert password:")
+    print("Password inserted is: ", password)
+
+    webhook = input("Insert Discord webhook:")
+    print("Discord webhook inserted is: ", webhook)
+    
+    save_details(username, password, webhook)
+
+def get_username():
     if(os.path.exists(filename) == False):
         save()
 
@@ -27,7 +34,7 @@ def username():
     data = json.load(config)
     return data["user_name"]
 
-def password():
+def get_password():
     if(os.path.exists(filename) == False):
         save()
         
@@ -35,7 +42,7 @@ def password():
     data = json.load(config)
     return data["password"]
 
-def webhook():
+def get_webhook():
     if(os.path.exists(filename) == False):
         save()
         

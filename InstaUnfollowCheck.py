@@ -1,4 +1,4 @@
-from InstaConfig import username, password
+from InstaConfig import get_username, get_password
 from InstaLogin import login
 import InstaConfig
 import instaloader
@@ -22,18 +22,18 @@ def send_discord_message(message, profiles):
         message += "https://www.instagram.com/{} \n".format(profile)
         if len(message) > 1900:
             # getting closer to the 2000 characters limit, send message now and reset
-            webhook = discord_webhook.DiscordWebhook(url=InstaConfig.webhook(), content=message)
+            webhook = discord_webhook.DiscordWebhook(url=InstaConfig.get_webhook(), content=message)
             webhook.execute()
             message = ""
             # avoid throttling
             time.sleep(10)
 
-    webhook = discord_webhook.DiscordWebhook(url=InstaConfig.webhook(), content=message)
+    webhook = discord_webhook.DiscordWebhook(url=InstaConfig.get_webhook(), content=message)
     webhook.execute()
 
-def check_followers():
+def check_followers_with_details(username, password):
     L = instaloader.Instaloader()
-    L.login(InstaConfig.username(), InstaConfig.password())
+    L.login(username, password)
 
     profile = instaloader.Profile.from_username(L.context, "lomos_dungeon")
     current_followers = profile.get_followers()
@@ -59,7 +59,7 @@ def check_followers():
 def start():
     while(True):
         try:
-            check_followers()
+            check_followers_with_details(InstaConfig.get_username(), InstaConfig.get_password())
             time.sleep(60 * 60) # wait 1 hour before running again 
         except KeyboardInterrupt:
             print("Exiting...")
@@ -70,7 +70,7 @@ def start():
 
 def test_webhook():
     L = instaloader.Instaloader()
-    L.login(InstaConfig.username(), InstaConfig.password())
+    L.login(InstaConfig.get_username(), InstaConfig.get_password())
 
     profile = instaloader.Profile.from_username(L.context, "lollo.bot")
     current_followers = profile.get_followers()
